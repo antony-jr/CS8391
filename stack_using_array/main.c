@@ -7,75 +7,52 @@ typedef struct {
 	int *array;
 } stack_t;
 
-stack_t *stack_new(){
+stack_t *stack_new(int size){
 	stack_t *r = calloc(1 , sizeof *r);
 	if(!r){
 		return NULL;
 	}
+	r->size = size;
+	r->array = calloc(size , sizeof(*(r->array)));
 	r->tos = -1;
-	r->size = 0;
 	return r;
 }
 
 void stack_delete(stack_t *ctx){
-	if(!ctx){
-		return;
-	}
-
-	if(ctx->array){
-		free(ctx->array);
-	}
+	free(ctx->array);
 	free(ctx);	
 }
 
 int stack_make_empty(stack_t *ctx){
-	if(!ctx){
-		return -1;
-	}
 	ctx->tos = -1;
 	return 0;
 }
 
 int stack_top_element(stack_t *ctx, int *el){
-	if(!ctx){
-		return -1;
-	}else if(0 > ctx->tos){
+	if(0 > ctx->tos){
+		printf("fatal error: stack is empty!");
 		return -2;
 	}
-
 	*el = *(ctx->array + ctx->tos);
 	return 0;
 }
 
 int stack_push(stack_t *ctx, int el){
-	int *guard = NULL;
-	if(!ctx){
-		return -1;
-	}	
-
 	ctx->tos += 1;
 	if(ctx->tos >= ctx->size){	
-		/* reallocate */
-		ctx->size += 1;
-		guard = realloc(ctx->array , sizeof(*(ctx->array)) * ctx->size);
-		if(!guard){ /* realloc failed */
-			ctx->size -= 1;
-			ctx->tos -= 1;
-			return -2; /* stack overflow. */
-		}
-		ctx->array = guard;
+		printf("fatal error: stack overflow!\n");
+		ctx->tos -= 1;
+		return -2; /* stack overflow. */
 	}	
 	*(ctx->array + ctx->tos) = el;
 	return 0;
 }
 
 int stack_pop(stack_t *ctx , int *el){
-	if(!ctx){
-		return -1;
-	}else if(0 > ctx->tos){
+	if(0 > ctx->tos){
+		printf("fatal error: empty stack!\n");
 		return -3; /* empty stack */
 	}
-
 	*el = *(ctx->array + ctx->tos);
 	ctx->tos -= 1;
 	return 0;
@@ -93,27 +70,23 @@ static void stack_print(stack_t *ctx){
 	"+      STACK      +\n"
 	"+-----------------+\n");
 	
-	printf(
-	"+ INDEX  |  VALUE +\n"
-	"+-----------------+\n");
 	iter = ctx->tos;
 	while(iter!=-1){
 	printf(
-	"   %d    |   %d   \n",
-	iter, *(ctx->array + iter) 
+	"%d\n",
+	*(ctx->array + iter) 
 	);
 	--iter;
 	}
 	printf(
-	"+-----------------+\n");
-
+	"==================\n");
 	return;
 }
 
 int main(){
 	int opt = 0,
 	    buf = 0;
-	stack_t *ctx = stack_new();	
+	stack_t *ctx = stack_new(20);	
 	while(opt!=6){
 		printf(
 		"::STACK OPERATIONS::\n");
@@ -134,7 +107,6 @@ int main(){
 				printf("\n\nEnter the element to push: ");
 				scanf("%d" , &buf);
 				if(stack_push(ctx, buf)){
-					printf("Cannot push element, failed!\n");
 					opt = 6;
 					break;
 				}
@@ -143,7 +115,6 @@ int main(){
 			case 2:
 				
 				if(stack_pop(ctx, &buf)){
-					printf("Cannot pop element, failed!\n\n");
 					opt = 6;
 					break;
 				}
@@ -152,7 +123,6 @@ int main(){
 			case 3:
 				
 				if(stack_top_element(ctx, &buf)){
-					printf("Cannot take top element, failed!\n\n");
 					opt = 6;
 					break;
 				}
