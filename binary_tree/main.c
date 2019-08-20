@@ -40,15 +40,20 @@ static void bin_tree_print(bin_tree_t *tree, int indent){
 }
 
 int main(int ac, char **av){
-	bin_tree_t *tree = NULL;
+	bin_tree_t *tree = NULL,
+		   *p = NULL;
 	int opt = 0;
 	int value = 0;
-	while(opt != 4){
-		printf(":: OPERATIONS ::\n");
-		printf("   1. Insert    \n");
-		printf("   2. Delete    \n");
-		printf("   3. Display   \n");
-		printf("   4. Exit      \n");
+	while(opt != 7){
+		printf(
+		":: OPERATIONS ::\n"
+		"   1. Insert\n"
+		"   2. Delete\n"
+		"   3. Find\n"
+		"   4. Find minimum\n"
+		"   5. Find maximum\n"
+		"   6. Display\n"
+		"   7. Exit\n");
 		printf("Enter your choice: ");
 		scanf("%d" , &opt);
 		if(opt == 1){
@@ -61,12 +66,37 @@ int main(int ac, char **av){
 			scanf("%d" , &value);
 			tree = bin_tree_delete(tree, value);
 			printf("\n\n");
-		}else if(opt == 3){
+		}
+		else if(opt == 3){
+			printf("Enter the node value to find: ");
+			scanf("%d" , &value);
+			p = bin_tree_find(tree, value);
+			if(p){
+				printf("[%p](%d) Found!\n\n", p, p->data);
+			}else{
+				printf("Node not found!\n\n");
+			}
+		}else if(opt == 4){
+			p = bin_tree_find_min(tree);
+			if(p){
+				printf("Minimum: [%p][%d]\n\n",p ,p->data);
+			}else{
+				printf("Tree is empty!\n\n");
+			}
+		}else if(opt == 5){
+			p = bin_tree_find_max(tree);
+			if(p){
+				printf("Maximum: [%p][%d]\n\n",p ,p->data);
+			}else{
+				printf("Tree is empty!\n\n");
+			}
+		}	
+		else if(opt == 6){
 			printf("\n\n\n");
 			bin_tree_print(tree, 0);
 			printf("\n\n\n");	
 		}else{
-			opt = 4;
+			opt = 7;
 		}
 	}
 	printf("\n\nBINARY TREE HEIGHT:: %d\n" , bin_tree_height(tree));
