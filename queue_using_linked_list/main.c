@@ -118,7 +118,7 @@ int main(){
 	queue_t *ctx = queue_new();	
 	while(opt!=5){
 		printf(
-		"::STACK OPERATIONS::\n");
+		"::QUEUE OPERATIONS::\n");
 		printf(
 		"1. Enqueue element to queue.\n"
 		"2. Dequeue element from queue.\n"
